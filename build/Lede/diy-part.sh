@@ -14,15 +14,14 @@ gitsvn \
     https://github.com/coolsnowwolf/luci/tree/master/applications/luci-app-v2ray-server \
     "${HOME_PATH}/package/luci-app-v2ray-server"
 
-
 # =========================
-# 添加 ServerChan
+# 添加微信推送（luci-app-wechatpush）
 # =========================
-rm -rf "${HOME_PATH}/package/luci-app-serverchan"
+rm -rf "${HOME_PATH}/package/luci-app-wechatpush"
 
 gitsvn \
-    https://github.com/easychen/luci-app-serverchan \
-    "${HOME_PATH}/package/luci-app-serverchan"
+    https://github.com/tty228/luci-app-wechatpush \
+    "${HOME_PATH}/package/luci-app-wechatpush"
 
 # 后台IP设置
 export Ipv4_ipaddr="192.168.2.2"            # 修改openwrt后台地址(填0为关闭)

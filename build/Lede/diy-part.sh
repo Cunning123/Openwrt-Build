@@ -5,6 +5,25 @@
 # 不要一下就拉取别人一个插件包N多插件的，多了没用，增加编译错误，自己需要的才好
 
 
+# =========================
+# 添加 V2Ray Server
+# =========================
+rm -rf "${HOME_PATH}/package/luci-app-v2ray-server"
+
+gitsvn \
+    https://github.com/coolsnowwolf/luci/tree/master/applications/luci-app-v2ray-server \
+    "${HOME_PATH}/package/luci-app-v2ray-server"
+
+
+# =========================
+# 添加 ServerChan
+# =========================
+rm -rf "${HOME_PATH}/package/luci-app-serverchan"
+
+gitsvn \
+    https://github.com/easychen/luci-app-serverchan \
+    "${HOME_PATH}/package/luci-app-serverchan"
+
 # 后台IP设置
 export Ipv4_ipaddr="192.168.2.2"            # 修改openwrt后台地址(填0为关闭)
 export Netmask_netm="255.255.255.0"         # IPv4 子网掩码（默认：255.255.255.0）(填0为不作修改)
@@ -31,7 +50,7 @@ export Enable_IPV6_function="0"             # 编译IPV6固件(1为启用命令,
 export Enable_IPV4_function="0"             # 编译IPV4固件(1为启用命令,填0为不作修改)(如果跟Enable_IPV6_function一起启用命令的话,此命令会自动关闭)
 
 # 替换OpenClash的源码(默认master分支)
-export OpenClash_branch="0"                 # OpenClash的源码分别有【master分支】和【dev分支】(填0为关闭,填1为使用master分支,填2为使用dev分支,填入1或2的时候固件自动增加此插件)
+export OpenClash_branch="1"                 # OpenClash的源码分别有【master分支】和【dev分支】(填0为关闭,填1为使用master分支,填2为使用dev分支,填入1或2的时候固件自动增加此插件)
 
 # 个性签名,默认增加年月日[$(TZ=UTC-8 date "+%Y.%m.%d")]
 export Customized_Information="$(TZ=UTC-8 date "+%Y.%m.%d")"  # 个性签名,你想写啥就写啥，(填0为不作修改)

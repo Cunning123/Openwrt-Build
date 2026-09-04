@@ -5,23 +5,35 @@
 # 不要一下就拉取别人一个插件包N多插件的，多了没用，增加编译错误，自己需要的才好
 
 
-# =========================
+# =========================================================
 # 添加 V2Ray Server
-# =========================
+# =========================================================
 rm -rf "${HOME_PATH}/package/luci-app-v2ray-server"
 
 gitsvn \
     https://github.com/coolsnowwolf/luci/tree/master/applications/luci-app-v2ray-server \
     "${HOME_PATH}/package/luci-app-v2ray-server"
 
-# =========================
+
+# =========================================================
 # 添加微信推送（luci-app-wechatpush）
-# =========================
+# =========================================================
 rm -rf "${HOME_PATH}/package/luci-app-wechatpush"
 
 gitsvn \
     https://github.com/tty228/luci-app-wechatpush \
     "${HOME_PATH}/package/luci-app-wechatpush"
+
+
+# =========================================================
+# 添加 luci-app-autoupdate
+# =========================================================
+rm -rf "${HOME_PATH}/package/luci-app-autoupdate"
+
+gitsvn \
+    https://github.com/281677160/luci-app-autoupdate \
+    "${HOME_PATH}/package/luci-app-autoupdate"
+
 
 # 后台IP设置
 export Ipv4_ipaddr="192.168.2.2"            # 修改openwrt后台地址(填0为关闭)

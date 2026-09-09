@@ -6,62 +6,100 @@
 
 
 # =========================================================
-# 基础变量
+# 进入源码目录
 # =========================================================
 
-# 当前源码根目录
 cd "${HOME_PATH}" || exit 1
 
+
 # =========================================================
-# 由于 common 的执行顺序无法修改
-# 本文件在 feeds update/install 之前执行
-# 因此在这里提前加入官方作者 feed
+# 清理可能造成 Kconfig 递归依赖的插件
 # =========================================================
+
+rm -rf "${HOME_PATH}/package/mihomo-alpha"
+rm -rf "${HOME_PATH}/package/mihomo-meta"
+
+rm -rf "${HOME_PATH}/package/kmod-oaf"
+rm -rf "${HOME_PATH}/package/appfilter"
+rm -rf "${HOME_PATH}/package/luci-app-oaf"
+rm -rf "${HOME_PATH}/package/OpenAppFilter"
+
+rm -rf "${HOME_PATH}/package/new/mihomo-alpha"
+rm -rf "${HOME_PATH}/package/new/mihomo-meta"
+rm -rf "${HOME_PATH}/package/new/kmod-oaf"
+rm -rf "${HOME_PATH}/package/new/appfilter"
+rm -rf "${HOME_PATH}/package/new/luci-app-oaf"
+rm -rf "${HOME_PATH}/package/new/OpenAppFilter"
 
 
 # =========================================================
-# PassWall 官方作者源
-# =========================================================
-grep -q "github.com/Openwrt-Passwall/openwrt-passwall-packages" feeds.conf.default || \
-sed -i '1i src-git passwall_packages https://github.com/Openwrt-Passwall/openwrt-passwall-packages.git;main' feeds.conf.default
-
-grep -q "github.com/Openwrt-Passwall/openwrt-passwall.git" feeds.conf.default || \
-sed -i '1i src-git passwall_luci https://github.com/Openwrt-Passwall/openwrt-passwall.git;main' feeds.conf.default
-
-
-# =========================================================
-# PassWall2 官方作者源
-# =========================================================
-grep -q "github.com/Openwrt-Passwall/openwrt-passwall2.git" feeds.conf.default || \
-sed -i '1i src-git passwall2 https://github.com/Openwrt-Passwall/openwrt-passwall2.git;main' feeds.conf.default
-
-
-# =========================================================
-# OpenClash 官方作者源
+# 官方插件 Feed
 #
-# 不使用 common 的 OpenClash_branch 自动添加
-# 避免重复 feed
+# 注意：
+# common 后面会自行：
+# ./scripts/feeds update -a
+# ./scripts/feeds install -a
+#
+# 所以这里只提前写 feeds.conf.default
 # =========================================================
+
+
+# =========================================================
+# PassWall 官方 Feed
+# =========================================================
+
+grep -q 'src-git passwall_luci ' feeds.conf.default || \
+echo 'src-git passwall_luci https://github.com/Openwrt-Passwall/openwrt-passwall.git;main' >> feeds.conf.default
+
+grep -q 'src-git passwall_packages ' feeds.conf.default || \
+echo 'src-git passwall_packages https://github.com/Openwrt-Passwall/openwrt-passwall-packages.git;main' >> feeds.conf.default
+
+
+# =========================================================
+# PassWall2 官方 Feed
+# =========================================================
+
+grep -q 'src-git passwall2 ' feeds.conf.default || \
+echo 'src-git passwall2 https://github.com/Openwrt-Passwall/openwrt-passwall2.git;main' >> feeds.conf.default
+
+
+# =========================================================
+# OpenClash 官方 Feed
+#
+# 由于 common 自己会根据 OpenClash_branch 加 Feed
+# 这里关闭 common 自动添加，避免重复
+# =========================================================
+
 export OpenClash_branch="0"
 
-grep -q "github.com/vernesong/OpenClash" feeds.conf.default || \
-sed -i '1i src-git openclash https://github.com/vernesong/OpenClash.git;master' feeds.conf.default
+grep -q 'src-git openclash ' feeds.conf.default || \
+echo 'src-git openclash https://github.com/vernesong/OpenClash.git;master' >> feeds.conf.default
 
 
 # =========================================================
-# iStore 官方作者源
+# iStore 官方 Feed
 # =========================================================
-grep -q "github.com/linkease/istore" feeds.conf.default || \
-sed -i '1i src-git istore https://github.com/linkease/istore.git;main' feeds.conf.default
+
+grep -q 'src-git istore ' feeds.conf.default || \
+echo 'src-git istore https://github.com/linkease/istore.git;main' >> feeds.conf.default
 
 
 # =========================================================
-# Bypass
-#
-# 原作者 regtalisman/luci-app-bypass 已无可用官方仓库
-# 使用确认来自原作者仓库的最后 fork
+# 删除旧的独立插件源码
 # =========================================================
+
+rm -rf "${HOME_PATH}/package/luci-app-v2ray-server"
+rm -rf "${HOME_PATH}/package/luci-app-wechatpush"
+rm -rf "${HOME_PATH}/package/luci-app-autoupdate"
+rm -rf "${HOME_PATH}/package/luci-app-singbox-ui"
 rm -rf "${HOME_PATH}/package/luci-app-bypass"
+
+
+# =========================================================
+# 添加 Bypass
+#
+# 原作者仓库已归档，使用现存 fork
+# =========================================================
 
 git clone -q --depth=1 \
     https://github.com/nuoooo/openwrt-bypass.git \
@@ -77,11 +115,11 @@ rm -rf /tmp/openwrt-bypass
 
 
 # =========================================================
-# V2Ray Server
+# 添加 V2Ray Server
 #
-# 来源：coolsnowwolf/luci
+# 来源：
+# https://github.com/coolsnowwolf/luci
 # =========================================================
-rm -rf "${HOME_PATH}/package/luci-app-v2ray-server"
 
 git clone -q \
     --filter=blob:none \
@@ -89,27 +127,36 @@ git clone -q \
     https://github.com/coolsnowwolf/luci.git \
     /tmp/coolsnowwolf-luci
 
-cd /tmp/coolsnowwolf-luci || exit 1
+if [ -d "/tmp/coolsnowwolf-luci" ]; then
 
-git sparse-checkout init --cone
-git sparse-checkout set applications/luci-app-v2ray-server
-git checkout -q
+    cd /tmp/coolsnowwolf-luci || exit 1
 
-if [ -d "applications/luci-app-v2ray-server" ]; then
-    cp -Rf \
-        "applications/luci-app-v2ray-server" \
-        "${HOME_PATH}/package/luci-app-v2ray-server"
+    git sparse-checkout init --cone
+
+    git sparse-checkout set \
+        applications/luci-app-v2ray-server
+
+    git checkout -q
+
+    if [ -d "applications/luci-app-v2ray-server" ]; then
+        cp -Rf \
+            applications/luci-app-v2ray-server \
+            "${HOME_PATH}/package/luci-app-v2ray-server"
+    fi
+
 fi
 
 cd "${HOME_PATH}" || exit 1
+
 rm -rf /tmp/coolsnowwolf-luci
 
 
 # =========================================================
-# 微信推送
-# 原作者：tty228
+# 添加 微信推送
+#
+# 原作者：
+# tty228/luci-app-wechatpush
 # =========================================================
-rm -rf "${HOME_PATH}/package/luci-app-wechatpush"
 
 git clone -q --depth=1 \
     https://github.com/tty228/luci-app-wechatpush.git \
@@ -117,10 +164,11 @@ git clone -q --depth=1 \
 
 
 # =========================================================
-# 自动升级
-# 原作者：281677160
+# 添加 自动升级
+#
+# 原作者：
+# 281677160/luci-app-autoupdate
 # =========================================================
-rm -rf "${HOME_PATH}/package/luci-app-autoupdate"
 
 git clone -q --depth=1 \
     https://github.com/281677160/luci-app-autoupdate.git \
@@ -128,21 +176,21 @@ git clone -q --depth=1 \
 
 
 # =========================================================
-# Sing-box UI
-# 原作者：ang3el7z
+# 添加 Sing-box UI
+#
+# 原作者：
+# ang3el7z/luci-app-singbox-ui
 # =========================================================
-rm -rf "${HOME_PATH}/package/luci-app-singbox-ui"
 
 git clone -q --depth=1 \
     https://github.com/ang3el7z/luci-app-singbox-ui.git \
     "${HOME_PATH}/package/luci-app-singbox-ui"
 
 
-
 # 后台IP设置
 export Ipv4_ipaddr="192.168.2.2"            # 修改openwrt后台地址(填0为关闭)
 export Netmask_netm="255.255.255.0"         # IPv4 子网掩码（默认：255.255.255.0）(填0为不作修改)
-export Op_name="OpenWrt-123"                # 修改主机名称为OpenWrt-123(填0为不作修改)
+export Op_name="OpenWrt"                # 修改主机名称为OpenWrt-123(填0为不作修改)
 
 # 内核和系统分区大小(不是每个机型都可用)
 export Kernel_partition_size="0"            # 内核分区大小,每个机型默认值不一样 (填写您想要的数值,默认一般16,数值以MB计算，填0为不作修改),如果你不懂就填0
@@ -210,6 +258,59 @@ grep -rl '"USB 打印服务器"' . | xargs -r sed -i 's?"USB 打印服务器"?"�
 grep -rl '"Web 管理"' . | xargs -r sed -i 's?"Web 管理"?"Web管理"?g'
 grep -rl '"管理权"' . | xargs -r sed -i 's?"管理权"?"改密码"?g'
 grep -rl '"带宽监控"' . | xargs -r sed -i 's?"带宽监控"?"监控"?g'
+
+
+# =========================================================
+# 编译前检查
+# =========================================================
+
+echo "========================================================="
+echo "检查自定义插件"
+echo "========================================================="
+
+for PKG in \
+    luci-app-bypass \
+    luci-app-v2ray-server \
+    luci-app-wechatpush \
+    luci-app-autoupdate \
+    luci-app-singbox-ui
+do
+    if [ -f "${HOME_PATH}/package/${PKG}/Makefile" ]; then
+        echo "[OK] ${PKG}"
+    else
+        echo "[WARN] ${PKG} 未找到 Makefile"
+    fi
+done
+
+
+# =========================================================
+# 检查冲突包
+# =========================================================
+
+echo "========================================================="
+echo "检查 mihomo / OAF 冲突包"
+echo "========================================================="
+
+find "${HOME_PATH}/package" -type f \
+    \( -name Makefile -o -name Kconfig \) \
+    -print0 2>/dev/null |
+xargs -0 grep -IlE \
+    'mihomo-alpha|mihomo-meta|kmod-oaf' \
+    2>/dev/null || true
+
+
+# =========================================================
+# 检查 feeds
+# =========================================================
+
+echo "========================================================="
+echo "当前 feeds.conf.default"
+echo "========================================================="
+
+grep -E \
+    'Openwrt-Passwall|OpenClash|linkease/istore' \
+    "${HOME_PATH}/feeds.conf.default" || true
+
 
 
 # 整理固件包时候,删除您不想要的固件或者文件,让它不需要上传到Actions空间(根据编译机型变化,自行调整删除名称)

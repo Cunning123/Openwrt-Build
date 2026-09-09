@@ -2,46 +2,83 @@ CONFIG_TARGET_x86=y
 CONFIG_TARGET_x86_64=y
 CONFIG_TARGET_x86_64_DEVICE_generic=y
 
+# =========================================================
 # GRUB
-CONFIG_GRUB_IMAGES=y
-# CONFIG_GRUB_CONSOLE is not set
+# =========================================================
 
+# CONFIG_GRUB_CONSOLE is not set
+CONFIG_GRUB_IMAGES=y
+
+
+# =========================================================
 # 分区
+# =========================================================
+
 CONFIG_TARGET_KERNEL_PARTSIZE=256
 CONFIG_TARGET_ROOTFS_TARGZ=y
 
 
 # =========================================================
-# 基础
+# 基础系统
 # =========================================================
 
+CONFIG_PACKAGE_6in4=y
 CONFIG_PACKAGE_bash=y
 CONFIG_PACKAGE_tar=y
 CONFIG_PACKAGE_unzip=y
 CONFIG_PACKAGE_openssh-sftp-server=y
 CONFIG_PACKAGE_ipv6helper=y
-CONFIG_PACKAGE_6in4=y
 
 
 # =========================================================
-# LuCI
+# 常用工具
+# =========================================================
+
+CONFIG_PACKAGE_blkid=y
+CONFIG_PACKAGE_lsblk=y
+CONFIG_PACKAGE_parted=y
+CONFIG_PACKAGE_mdadm=y
+
+CONFIG_PACKAGE_smartd=y
+CONFIG_PACKAGE_smartmontools=y
+CONFIG_PACKAGE_smartmontools-drivedb=y
+
+
+# =========================================================
+# Coreutils
+# =========================================================
+
+CONFIG_PACKAGE_coreutils-nohup=y
+CONFIG_PACKAGE_coreutils-stat=y
+CONFIG_PACKAGE_coreutils-stty=y
+CONFIG_PACKAGE_coreutils-timeout=y
+
+
+# =========================================================
+# Luci SSL
 # =========================================================
 
 CONFIG_PACKAGE_luci-ssl-openssl=y
+
+
+# =========================================================
+# LuCI libraries
+# =========================================================
+
 CONFIG_PACKAGE_luci-lib-ipkg=y
 CONFIG_PACKAGE_luci-lib-taskd=y
 CONFIG_PACKAGE_luci-lib-xterm=y
 
 
 # =========================================================
-# 主题
+# Argon
 # =========================================================
 
 CONFIG_PACKAGE_luci-theme-argon=y
 
 
 # =========================================================
-# 常用 LuCI
+# 常用 LuCI 插件
 # =========================================================
 
 CONFIG_PACKAGE_luci-app-fileassistant=y
@@ -86,6 +123,7 @@ CONFIG_PACKAGE_luci-app-bypass=y
 # =========================================================
 
 CONFIG_PACKAGE_luci-app-passwall=y
+
 CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Geoview=y
 CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Haproxy=y
 CONFIG_PACKAGE_luci-app-passwall_INCLUDE_ShadowsocksR_Libev_Client=y
@@ -101,6 +139,7 @@ CONFIG_PACKAGE_luci-app-passwall_Iptables_Transparent_Proxy=y
 # =========================================================
 
 CONFIG_PACKAGE_luci-app-passwall2=y
+
 CONFIG_PACKAGE_luci-app-passwall2_INCLUDE_Haproxy=y
 CONFIG_PACKAGE_luci-app-passwall2_INCLUDE_ShadowsocksR_Libev_Client=y
 CONFIG_PACKAGE_luci-app-passwall2_INCLUDE_Shadowsocks_Rust_Client=y
@@ -114,6 +153,7 @@ CONFIG_PACKAGE_luci-app-passwall2_Iptables_Transparent_Proxy=y
 # =========================================================
 
 CONFIG_PACKAGE_luci-app-ssr-plus=y
+
 CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_ChinaDNS_NG=y
 CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Hysteria=y
 CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_IPT2Socks=y
@@ -122,10 +162,16 @@ CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Trojan=y
 
 
 # =========================================================
-# Sing-box
+# Sing-box 核心
 # =========================================================
 
 CONFIG_PACKAGE_sing-box=y
+
+
+# =========================================================
+# Sing-box LuCI
+# =========================================================
+
 CONFIG_PACKAGE_luci-app-singbox-ui=y
 
 
@@ -174,7 +220,7 @@ CONFIG_PACKAGE_v2ray-plugin=y
 
 
 # =========================================================
-# V2Ray GeoData
+# V2Ray GeoIP / GeoSite
 # =========================================================
 
 CONFIG_PACKAGE_v2ray-geoip=y
@@ -232,10 +278,10 @@ CONFIG_PACKAGE_luci-app-autoupdate=y
 
 
 # =========================================================
-# SmartDNS
+# iStore
 # =========================================================
 
-CONFIG_PACKAGE_smartdns=y
+CONFIG_PACKAGE_luci-app-store=y
 
 
 # =========================================================
@@ -246,10 +292,10 @@ CONFIG_PACKAGE_lucky=y
 
 
 # =========================================================
-# Netdata
+# SmartDNS
 # =========================================================
 
-CONFIG_PACKAGE_netdata=y
+CONFIG_PACKAGE_smartdns=y
 
 
 # =========================================================
@@ -260,12 +306,24 @@ CONFIG_PACKAGE_luci-app-mosdns=y
 
 
 # =========================================================
-# Smartmontools
+# Netdata
 # =========================================================
 
-CONFIG_PACKAGE_smartd=y
-CONFIG_PACKAGE_smartmontools=y
-CONFIG_PACKAGE_smartmontools-drivedb=y
+CONFIG_PACKAGE_netdata=y
+
+
+# =========================================================
+# RamFree
+# =========================================================
+
+CONFIG_PACKAGE_luci-app-ramfree=y
+
+
+# =========================================================
+# 微信推送基础依赖
+# =========================================================
+
+CONFIG_PACKAGE_iputils-arping=y
 
 
 # =========================================================
@@ -282,24 +340,35 @@ CONFIG_SQLITE3_RTREE=y
 
 
 # =========================================================
-# 微信推送依赖
+# 明确关闭 WireGuard
 # =========================================================
 
-CONFIG_PACKAGE_iputils-arping=y
-
-
-# =========================================================
-# 明确关闭
-# =========================================================
-
-# WireGuard
 # CONFIG_PACKAGE_kmod-wireguard is not set
-# CONFIG_PACKAGE_luci-proto-wireguard is not set
 # CONFIG_PACKAGE_wireguard-tools is not set
+# CONFIG_PACKAGE_luci-proto-wireguard is not set
 # CONFIG_SING_BOX_BUILD_WIREGUARD is not set
 
-# nlbwmon
+
+# =========================================================
+# 明确关闭 nlbwmon
+# =========================================================
+
 # CONFIG_PACKAGE_nlbwmon is not set
 
-# ServerChan
-# 不单独加入
+
+# =========================================================
+# 不加入 ServerChan
+# =========================================================
+
+
+# =========================================================
+# 不主动手工指定以下依赖
+#
+# lib*
+# python3-*
+# ruby-*
+# shadow-*
+# boost-*
+#
+# 交给 make defconfig 自动解析
+# =========================================================

@@ -6,33 +6,137 @@
 
 
 # =========================================================
-# 添加 V2Ray Server
+# 基础变量
+# =========================================================
+
+# 当前源码根目录
+cd "${HOME_PATH}" || exit 1
+
+# =========================================================
+# 由于 common 的执行顺序无法修改
+# 本文件在 feeds update/install 之前执行
+# 因此在这里提前加入官方作者 feed
+# =========================================================
+
+
+# =========================================================
+# PassWall 官方作者源
+# =========================================================
+grep -q "github.com/Openwrt-Passwall/openwrt-passwall-packages" feeds.conf.default || \
+sed -i '1i src-git passwall_packages https://github.com/Openwrt-Passwall/openwrt-passwall-packages.git;main' feeds.conf.default
+
+grep -q "github.com/Openwrt-Passwall/openwrt-passwall.git" feeds.conf.default || \
+sed -i '1i src-git passwall_luci https://github.com/Openwrt-Passwall/openwrt-passwall.git;main' feeds.conf.default
+
+
+# =========================================================
+# PassWall2 官方作者源
+# =========================================================
+grep -q "github.com/Openwrt-Passwall/openwrt-passwall2.git" feeds.conf.default || \
+sed -i '1i src-git passwall2 https://github.com/Openwrt-Passwall/openwrt-passwall2.git;main' feeds.conf.default
+
+
+# =========================================================
+# OpenClash 官方作者源
+#
+# 不使用 common 的 OpenClash_branch 自动添加
+# 避免重复 feed
+# =========================================================
+export OpenClash_branch="0"
+
+grep -q "github.com/vernesong/OpenClash" feeds.conf.default || \
+sed -i '1i src-git openclash https://github.com/vernesong/OpenClash.git;master' feeds.conf.default
+
+
+# =========================================================
+# iStore 官方作者源
+# =========================================================
+grep -q "github.com/linkease/istore" feeds.conf.default || \
+sed -i '1i src-git istore https://github.com/linkease/istore.git;main' feeds.conf.default
+
+
+# =========================================================
+# Bypass
+#
+# 原作者 regtalisman/luci-app-bypass 已无可用官方仓库
+# 使用确认来自原作者仓库的最后 fork
+# =========================================================
+rm -rf "${HOME_PATH}/package/luci-app-bypass"
+
+git clone -q --depth=1 \
+    https://github.com/nuoooo/openwrt-bypass.git \
+    /tmp/openwrt-bypass
+
+if [ -d "/tmp/openwrt-bypass/luci-app-bypass" ]; then
+    cp -Rf \
+        "/tmp/openwrt-bypass/luci-app-bypass" \
+        "${HOME_PATH}/package/luci-app-bypass"
+fi
+
+rm -rf /tmp/openwrt-bypass
+
+
+# =========================================================
+# V2Ray Server
+#
+# 来源：coolsnowwolf/luci
 # =========================================================
 rm -rf "${HOME_PATH}/package/luci-app-v2ray-server"
 
-gitsvn \
-    https://github.com/coolsnowwolf/luci/tree/master/applications/luci-app-v2ray-server \
-    "${HOME_PATH}/package/luci-app-v2ray-server"
+git clone -q \
+    --filter=blob:none \
+    --no-checkout \
+    https://github.com/coolsnowwolf/luci.git \
+    /tmp/coolsnowwolf-luci
+
+cd /tmp/coolsnowwolf-luci || exit 1
+
+git sparse-checkout init --cone
+git sparse-checkout set applications/luci-app-v2ray-server
+git checkout -q
+
+if [ -d "applications/luci-app-v2ray-server" ]; then
+    cp -Rf \
+        "applications/luci-app-v2ray-server" \
+        "${HOME_PATH}/package/luci-app-v2ray-server"
+fi
+
+cd "${HOME_PATH}" || exit 1
+rm -rf /tmp/coolsnowwolf-luci
 
 
 # =========================================================
-# 添加微信推送（luci-app-wechatpush）
+# 微信推送
+# 原作者：tty228
 # =========================================================
 rm -rf "${HOME_PATH}/package/luci-app-wechatpush"
 
-gitsvn \
-    https://github.com/tty228/luci-app-wechatpush \
+git clone -q --depth=1 \
+    https://github.com/tty228/luci-app-wechatpush.git \
     "${HOME_PATH}/package/luci-app-wechatpush"
 
 
 # =========================================================
-# 添加 luci-app-autoupdate
+# 自动升级
+# 原作者：281677160
 # =========================================================
 rm -rf "${HOME_PATH}/package/luci-app-autoupdate"
 
-gitsvn \
-    https://github.com/281677160/luci-app-autoupdate \
+git clone -q --depth=1 \
+    https://github.com/281677160/luci-app-autoupdate.git \
     "${HOME_PATH}/package/luci-app-autoupdate"
+
+
+# =========================================================
+# Sing-box UI
+# 原作者：ang3el7z
+# =========================================================
+rm -rf "${HOME_PATH}/package/luci-app-singbox-ui"
+
+git clone -q --depth=1 \
+    https://github.com/ang3el7z/luci-app-singbox-ui.git \
+    "${HOME_PATH}/package/luci-app-singbox-ui"
+
 
 
 # 后台IP设置

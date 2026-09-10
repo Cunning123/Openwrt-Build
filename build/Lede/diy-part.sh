@@ -172,7 +172,6 @@ echo "检查自定义插件"
 echo "========================================================="
 
 for PKG in \
-    luci-app-bypass \
     luci-app-v2ray-server \
     luci-app-wechatpush \
     luci-app-autoupdate \

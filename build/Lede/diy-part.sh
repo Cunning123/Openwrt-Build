@@ -4,26 +4,15 @@
 # 自行拉取插件之前请SSH连接进入固件配置里面确认过没有你要的插件再单独拉取你需要的插件
 # 不要一下就拉取别人一个插件包N多插件的，多了没用，增加编译错误，自己需要的才好
 
-
-# =========================================================
-# 进入源码目录
-# =========================================================
-
 cd "${HOME_PATH}" || exit 1
 
-
-# =========================================================
-# 清理可能造成 Kconfig 递归依赖的插件
-# =========================================================
-
+# 清理冲突包
 rm -rf "${HOME_PATH}/package/mihomo-alpha"
 rm -rf "${HOME_PATH}/package/mihomo-meta"
-
 rm -rf "${HOME_PATH}/package/kmod-oaf"
 rm -rf "${HOME_PATH}/package/appfilter"
 rm -rf "${HOME_PATH}/package/luci-app-oaf"
 rm -rf "${HOME_PATH}/package/OpenAppFilter"
-
 rm -rf "${HOME_PATH}/package/new/mihomo-alpha"
 rm -rf "${HOME_PATH}/package/new/mihomo-meta"
 rm -rf "${HOME_PATH}/package/new/kmod-oaf"
@@ -31,76 +20,35 @@ rm -rf "${HOME_PATH}/package/new/appfilter"
 rm -rf "${HOME_PATH}/package/new/luci-app-oaf"
 rm -rf "${HOME_PATH}/package/new/OpenAppFilter"
 
-
-# =========================================================
-# 官方插件 Feed
-#
-# 注意：
-# common 后面会自行：
-# ./scripts/feeds update -a
-# ./scripts/feeds install -a
-#
-# 所以这里只提前写 feeds.conf.default
-# =========================================================
-
-
-# =========================================================
-# PassWall 官方 Feed
-# =========================================================
-
+# PassWall
 grep -q 'src-git passwall_luci ' feeds.conf.default || \
 echo 'src-git passwall_luci https://github.com/Openwrt-Passwall/openwrt-passwall.git;main' >> feeds.conf.default
 
 grep -q 'src-git passwall_packages ' feeds.conf.default || \
 echo 'src-git passwall_packages https://github.com/Openwrt-Passwall/openwrt-passwall-packages.git;main' >> feeds.conf.default
 
-
-# =========================================================
-# PassWall2 官方 Feed
-# =========================================================
-
+# PassWall2
 grep -q 'src-git passwall2 ' feeds.conf.default || \
 echo 'src-git passwall2 https://github.com/Openwrt-Passwall/openwrt-passwall2.git;main' >> feeds.conf.default
 
-
-# =========================================================
-# OpenClash 官方 Feed
-#
-# 由于 common 自己会根据 OpenClash_branch 加 Feed
-# 这里关闭 common 自动添加，避免重复
-# =========================================================
-
+# OpenClash
 export OpenClash_branch="0"
 
 grep -q 'src-git openclash ' feeds.conf.default || \
 echo 'src-git openclash https://github.com/vernesong/OpenClash.git;master' >> feeds.conf.default
 
-
-# =========================================================
-# iStore 官方 Feed
-# =========================================================
-
+# iStore
 grep -q 'src-git istore ' feeds.conf.default || \
 echo 'src-git istore https://github.com/linkease/istore.git;main' >> feeds.conf.default
 
-
-# =========================================================
-# 删除旧的独立插件源码
-# =========================================================
-
+# 清理旧插件
 rm -rf "${HOME_PATH}/package/luci-app-v2ray-server"
 rm -rf "${HOME_PATH}/package/luci-app-wechatpush"
 rm -rf "${HOME_PATH}/package/luci-app-autoupdate"
 rm -rf "${HOME_PATH}/package/luci-app-singbox-ui"
 rm -rf "${HOME_PATH}/package/luci-app-bypass"
 
-
-# =========================================================
-# 添加 Bypass
-#
-# 原作者仓库已归档，使用现存 fork
-# =========================================================
-
+# Bypass
 git clone -q --depth=1 \
     https://github.com/nuoooo/openwrt-bypass.git \
     /tmp/openwrt-bypass
@@ -113,14 +61,7 @@ fi
 
 rm -rf /tmp/openwrt-bypass
 
-
-# =========================================================
-# 添加 V2Ray Server
-#
-# 来源：
-# https://github.com/coolsnowwolf/luci
-# =========================================================
-
+# V2Ray Server
 git clone -q \
     --filter=blob:none \
     --no-checkout \
@@ -128,14 +69,10 @@ git clone -q \
     /tmp/coolsnowwolf-luci
 
 if [ -d "/tmp/coolsnowwolf-luci" ]; then
-
     cd /tmp/coolsnowwolf-luci || exit 1
 
     git sparse-checkout init --cone
-
-    git sparse-checkout set \
-        applications/luci-app-v2ray-server
-
+    git sparse-checkout set applications/luci-app-v2ray-server
     git checkout -q
 
     if [ -d "applications/luci-app-v2ray-server" ]; then
@@ -143,50 +80,27 @@ if [ -d "/tmp/coolsnowwolf-luci" ]; then
             applications/luci-app-v2ray-server \
             "${HOME_PATH}/package/luci-app-v2ray-server"
     fi
-
 fi
 
 cd "${HOME_PATH}" || exit 1
-
 rm -rf /tmp/coolsnowwolf-luci
 
-
-# =========================================================
-# 添加 微信推送
-#
-# 原作者：
-# tty228/luci-app-wechatpush
-# =========================================================
-
+# 微信推送
 git clone -q --depth=1 \
     https://github.com/tty228/luci-app-wechatpush.git \
     "${HOME_PATH}/package/luci-app-wechatpush"
 
-
-# =========================================================
-# 添加 自动升级
-#
-# 原作者：
-# 281677160/luci-app-autoupdate
-# =========================================================
-
+# 自动升级
 git clone -q --depth=1 \
     https://github.com/281677160/luci-app-autoupdate.git \
     "${HOME_PATH}/package/luci-app-autoupdate"
 
-
-# =========================================================
-# 添加 Sing-box UI
-#
-# 原作者：
-# ang3el7z/luci-app-singbox-ui
-# =========================================================
-
+# Sing-box UI
 git clone -q --depth=1 \
     https://github.com/ang3el7z/luci-app-singbox-ui.git \
     "${HOME_PATH}/package/luci-app-singbox-ui"
 
-
+    
 # 后台IP设置
 export Ipv4_ipaddr="192.168.2.99"            # 修改openwrt后台地址(填0为关闭)
 export Netmask_netm="255.255.255.0"         # IPv4 子网掩码（默认：255.255.255.0）(填0为不作修改)

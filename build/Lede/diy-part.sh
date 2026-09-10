@@ -48,18 +48,7 @@ rm -rf "${HOME_PATH}/package/luci-app-autoupdate"
 rm -rf "${HOME_PATH}/package/luci-app-singbox-ui"
 rm -rf "${HOME_PATH}/package/luci-app-bypass"
 
-# Bypass
-git clone -q --depth=1 \
-    https://github.com/nuoooo/openwrt-bypass.git \
-    /tmp/openwrt-bypass
 
-if [ -d "/tmp/openwrt-bypass/luci-app-bypass" ]; then
-    cp -Rf \
-        "/tmp/openwrt-bypass/luci-app-bypass" \
-        "${HOME_PATH}/package/luci-app-bypass"
-fi
-
-rm -rf /tmp/openwrt-bypass
 
 # V2Ray Server
 git clone -q \

@@ -1,93 +1,117 @@
 #!/bin/bash
-# Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
-# DIY扩展二合一了，在此处可以增加插件
-# 自行拉取插件之前请SSH连接进入固件配置里面确认过没有你要的插件再单独拉取你需要的插件
-# 不要一下就拉取别人一个插件包N多插件的，多了没用，增加编译错误，自己需要的才好
+# Copyright (c) 2019-2020 P3TERX
 
 cd "${HOME_PATH}" || exit 1
 
-# 清理冲突包
-rm -rf "${HOME_PATH}/package/mihomo-alpha"
-rm -rf "${HOME_PATH}/package/mihomo-meta"
-rm -rf "${HOME_PATH}/package/kmod-oaf"
-rm -rf "${HOME_PATH}/package/appfilter"
-rm -rf "${HOME_PATH}/package/luci-app-oaf"
-rm -rf "${HOME_PATH}/package/OpenAppFilter"
-rm -rf "${HOME_PATH}/package/new/mihomo-alpha"
-rm -rf "${HOME_PATH}/package/new/mihomo-meta"
-rm -rf "${HOME_PATH}/package/new/kmod-oaf"
-rm -rf "${HOME_PATH}/package/new/appfilter"
-rm -rf "${HOME_PATH}/package/new/luci-app-oaf"
-rm -rf "${HOME_PATH}/package/new/OpenAppFilter"
+# 清理冲突
+rm -rf ${HOME_PATH}/package/mihomo-alpha
+rm -rf ${HOME_PATH}/package/mihomo-meta
+rm -rf ${HOME_PATH}/package/kmod-oaf
+rm -rf ${HOME_PATH}/package/appfilter
+rm -rf ${HOME_PATH}/package/luci-app-oaf
+rm -rf ${HOME_PATH}/package/OpenAppFilter
+rm -rf ${HOME_PATH}/package/new/mihomo-alpha
+rm -rf ${HOME_PATH}/package/new/mihomo-meta
+rm -rf ${HOME_PATH}/package/new/kmod-oaf
+rm -rf ${HOME_PATH}/package/new/appfilter
+rm -rf ${HOME_PATH}/package/new/luci-app-oaf
+rm -rf ${HOME_PATH}/package/new/OpenAppFilter
+
+
+# 删除不用插件
+rm -rf ${HOME_PATH}/package/luci-app-bypass
+rm -rf ${HOME_PATH}/package/luci-app-netdata
+rm -rf ${HOME_PATH}/package/netdata
+rm -rf ${HOME_PATH}/package/luci-i18n-netdata-zh-cn
+rm -rf ${HOME_PATH}/package/luci-app-ddns
+rm -rf ${HOME_PATH}/package/ddns-scripts
+rm -rf ${HOME_PATH}/package/ddns-scripts-services
+
 
 # PassWall
-grep -q 'src-git passwall_luci ' feeds.conf.default || \
-echo 'src-git passwall_luci https://github.com/Openwrt-Passwall/openwrt-passwall.git;main' >> feeds.conf.default
+grep -q "src-git passwall_luci" feeds.conf.default || \
+echo "src-git passwall_luci https://github.com/Openwrt-Passwall/openwrt-passwall.git;main" >> feeds.conf.default
 
-grep -q 'src-git passwall_packages ' feeds.conf.default || \
-echo 'src-git passwall_packages https://github.com/Openwrt-Passwall/openwrt-passwall-packages.git;main' >> feeds.conf.default
+grep -q "src-git passwall_packages" feeds.conf.default || \
+echo "src-git passwall_packages https://github.com/Openwrt-Passwall/openwrt-passwall-packages.git;main" >> feeds.conf.default
+
 
 # PassWall2
-grep -q 'src-git passwall2 ' feeds.conf.default || \
-echo 'src-git passwall2 https://github.com/Openwrt-Passwall/openwrt-passwall2.git;main' >> feeds.conf.default
+grep -q "src-git passwall2" feeds.conf.default || \
+echo "src-git passwall2 https://github.com/Openwrt-Passwall/openwrt-passwall2.git;main" >> feeds.conf.default
+
 
 # OpenClash
-export OpenClash_branch="0"
+grep -q "src-git openclash" feeds.conf.default || \
+echo "src-git openclash https://github.com/vernesong/OpenClash.git;master" >> feeds.conf.default
 
-grep -q 'src-git openclash ' feeds.conf.default || \
-echo 'src-git openclash https://github.com/vernesong/OpenClash.git;master' >> feeds.conf.default
 
 # iStore
-grep -q 'src-git istore ' feeds.conf.default || \
-echo 'src-git istore https://github.com/linkease/istore.git;main' >> feeds.conf.default
+grep -q "src-git istore" feeds.conf.default || \
+echo "src-git istore https://github.com/linkease/istore.git;main" >> feeds.conf.default
 
-# 清理旧插件
-rm -rf "${HOME_PATH}/package/luci-app-v2ray-server"
-rm -rf "${HOME_PATH}/package/luci-app-wechatpush"
-rm -rf "${HOME_PATH}/package/luci-app-autoupdate"
-rm -rf "${HOME_PATH}/package/luci-app-singbox-ui"
-rm -rf "${HOME_PATH}/package/luci-app-bypass"
 
+# 清理插件
+rm -rf ${HOME_PATH}/package/luci-app-v2ray-server
+rm -rf ${HOME_PATH}/package/luci-app-wechatpush
+rm -rf ${HOME_PATH}/package/luci-app-autoupdate
+rm -rf ${HOME_PATH}/package/luci-app-singbox-ui
+rm -rf ${HOME_PATH}/package/luci-i18n-istore-zh-cn
+rm -rf ${HOME_PATH}/package/luci-i18n-quickstart-zh-cn
 
 
 # V2Ray Server
-git clone -q \
-    --filter=blob:none \
-    --no-checkout \
-    https://github.com/coolsnowwolf/luci.git \
-    /tmp/coolsnowwolf-luci
+rm -rf /tmp/coolsnowwolf-luci
 
-if [ -d "/tmp/coolsnowwolf-luci" ]; then
-    cd /tmp/coolsnowwolf-luci || exit 1
+git clone -q --depth=1 \
+https://github.com/coolsnowwolf/luci.git \
+/tmp/coolsnowwolf-luci
 
-    git sparse-checkout init --cone
-    git sparse-checkout set applications/luci-app-v2ray-server
-    git checkout -q
-
-    if [ -d "applications/luci-app-v2ray-server" ]; then
-        cp -Rf \
-            applications/luci-app-v2ray-server \
-            "${HOME_PATH}/package/luci-app-v2ray-server"
-    fi
+if [ -d "/tmp/coolsnowwolf-luci/applications/luci-app-v2ray-server" ]; then
+cp -Rf \
+/tmp/coolsnowwolf-luci/applications/luci-app-v2ray-server \
+${HOME_PATH}/package/luci-app-v2ray-server
 fi
 
-cd "${HOME_PATH}" || exit 1
 rm -rf /tmp/coolsnowwolf-luci
+
 
 # 微信推送
 git clone -q --depth=1 \
-    https://github.com/tty228/luci-app-wechatpush.git \
-    "${HOME_PATH}/package/luci-app-wechatpush"
+https://github.com/tty228/luci-app-wechatpush.git \
+${HOME_PATH}/package/luci-app-wechatpush
+
 
 # 自动升级
 git clone -q --depth=1 \
-    https://github.com/281677160/luci-app-autoupdate.git \
-    "${HOME_PATH}/package/luci-app-autoupdate"
+https://github.com/281677160/luci-app-autoupdate.git \
+${HOME_PATH}/package/luci-app-autoupdate
+
 
 # Sing-box UI
 git clone -q --depth=1 \
-    https://github.com/ang3el7z/luci-app-singbox-ui.git \
-    "${HOME_PATH}/package/luci-app-singbox-ui"
+https://github.com/ang3el7z/luci-app-singbox-ui.git \
+${HOME_PATH}/package/luci-app-singbox-ui
+
+# iStore 中文语言包
+git clone -q --depth=1 \
+https://github.com/linkease/istore.git \
+/tmp/istore
+
+if [ -d "/tmp/istore/luci-i18n-istore-zh-cn" ]; then
+cp -Rf \
+/tmp/istore/luci-i18n-istore-zh-cn \
+${HOME_PATH}/package/luci-i18n-istore-zh-cn
+fi
+
+if [ -d "/tmp/istore/luci-i18n-quickstart-zh-cn" ]; then
+cp -Rf \
+/tmp/istore/luci-i18n-quickstart-zh-cn \
+${HOME_PATH}/package/luci-i18n-quickstart-zh-cn
+fi
+
+rm -rf /tmp/istore
+
 
     
 # 后台IP设置
@@ -151,7 +175,7 @@ export rootfs_size="512/2560"
 export kernel_usage="stable"
 
 
-# 修改插件名字
+# 修改插件名称
 grep -rl '"终端"' . | xargs -r sed -i 's?"终端"?"TTYD"?g'
 grep -rl '"TTYD 终端"' . | xargs -r sed -i 's?"TTYD 终端"?"TTYD"?g'
 grep -rl '"网络存储"' . | xargs -r sed -i 's?"网络存储"?"NAS"?g'
@@ -163,24 +187,19 @@ grep -rl '"管理权"' . | xargs -r sed -i 's?"管理权"?"改密码"?g'
 grep -rl '"带宽监控"' . | xargs -r sed -i 's?"带宽监控"?"监控"?g'
 
 
-# =========================================================
-# 编译前检查
-# =========================================================
-
-echo "========================================================="
 echo "检查自定义插件"
-echo "========================================================="
 
 for PKG in \
-    luci-app-v2ray-server \
-    luci-app-wechatpush \
-    luci-app-autoupdate \
-    luci-app-singbox-ui
+luci-app-v2ray-server \
+luci-app-wechatpush \
+luci-app-autoupdate \
+luci-app-singbox-ui \
+luci-i18n-istore-zh-cn
 do
     if [ -f "${HOME_PATH}/package/${PKG}/Makefile" ]; then
         echo "[OK] ${PKG}"
     else
-        echo "[WARN] ${PKG} 未找到 Makefile"
+        echo "[WARN] ${PKG} 未找到"
     fi
 done
 

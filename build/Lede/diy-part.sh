@@ -204,34 +204,21 @@ do
 done
 
 
-# =========================================================
-# 检查冲突包
-# =========================================================
-
-echo "========================================================="
-echo "检查 mihomo / OAF 冲突包"
-echo "========================================================="
+echo "检查冲突包"
 
 find "${HOME_PATH}/package" -type f \
-    \( -name Makefile -o -name Kconfig \) \
-    -print0 2>/dev/null |
+\( -name Makefile -o -name Kconfig \) \
+-print0 2>/dev/null |
 xargs -0 grep -IlE \
-    'mihomo-alpha|mihomo-meta|kmod-oaf' \
-    2>/dev/null || true
+'mihomo-alpha|mihomo-meta|kmod-oaf' \
+2>/dev/null || true
 
 
-# =========================================================
-# 检查 feeds
-# =========================================================
-
-echo "========================================================="
-echo "当前 feeds.conf.default"
-echo "========================================================="
+echo "检查 feeds"
 
 grep -E \
-    'Openwrt-Passwall|OpenClash|linkease/istore' \
-    "${HOME_PATH}/feeds.conf.default" || true
-
+'Openwrt-Passwall|OpenClash|linkease/istore' \
+"${HOME_PATH}/feeds.conf.default" || true
 
 
 # 整理固件包时候,删除您不想要的固件或者文件,让它不需要上传到Actions空间(根据编译机型变化,自行调整删除名称)

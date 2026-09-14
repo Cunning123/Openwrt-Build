@@ -60,6 +60,46 @@ rm -rf ${HOME_PATH}/package/luci-i18n-istore-zh-cn
 rm -rf ${HOME_PATH}/package/luci-i18n-quickstart-zh-cn
 
 
+
+```sh
+# MosDNS v5
+# 删除源码自带的 MosDNS，改用 sbwml/luci-app-mosdns
+rm -rf ${HOME_PATH}/package/mosdns
+rm -rf ${HOME_PATH}/feeds/luci/applications/luci-app-mosdns
+rm -rf ${HOME_PATH}/feeds/packages/net/mosdns
+
+find ${HOME_PATH}/feeds -type f \
+    \( -name Makefile -o -name Kconfig \) \
+    -path '*mosdns*' \
+    -delete 2>/dev/null || true
+
+git clone -q \
+    https://github.com/sbwml/luci-app-mosdns.git \
+    ${HOME_PATH}/package/mosdns
+
+cd ${HOME_PATH}/package/mosdns || exit 1
+
+git checkout -q df6d67b84d32246081e259f3cb93dae63962a1fc
+
+cd ${HOME_PATH} || exit 1
+
+echo "检查 MosDNS"
+if [ -f "${HOME_PATH}/package/mosdns/mosdns/Makefile" ]; then
+    echo "[OK] MosDNS 5.3.4"
+else
+    echo "[WARN] MosDNS 源码未找到"
+fi
+
+if [ -f "${HOME_PATH}/package/mosdns/luci-app-mosdns/Makefile" ]; then
+    echo "[OK] luci-app-mosdns 1.7.13"
+else
+    echo "[WARN] luci-app-mosdns 未找到"
+fi
+```
+
+
+
+
 # V2Ray Server
 rm -rf /tmp/coolsnowwolf-luci
 

@@ -61,7 +61,6 @@ rm -rf ${HOME_PATH}/package/luci-i18n-quickstart-zh-cn
 
 
 
-```sh
 # MosDNS v5
 # 删除源码自带的 MosDNS，改用 sbwml/luci-app-mosdns
 rm -rf ${HOME_PATH}/package/mosdns
@@ -95,7 +94,6 @@ if [ -f "${HOME_PATH}/package/mosdns/luci-app-mosdns/Makefile" ]; then
 else
     echo "[WARN] luci-app-mosdns 未找到"
 fi
-```
 
 
 
